@@ -1,0 +1,9 @@
+﻿version: 0.2
+phases:
+  build:
+    commands:
+      - echo "Validando el script en CodeBuild..."
+      - python procesar.py
+artifacts:
+  files:
+    - '**/*'

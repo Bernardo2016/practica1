@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultados de Procesamiento EC2</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f4;}
+        .container { background: white; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1);}
+        input, button { padding: 10px; margin: 10px; font-size: 16px; }
+        button { background-color: #007f3f; color: white; border: none; cursor: pointer; border-radius: 5px;}
+        pre { text-align: left; background: #eee; padding: 10px; border-radius: 5px; overflow-x: auto;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Estados Económicos (Alojamiento < )</h2>
+        <p>Ingresa la IP Pública de tu instancia EC2 para obtener los datos procesados en tiempo real:</p>
+        <input type="text" id="ip-ec2" placeholder="Ej. 18.206.107.28">
+        <button onclick="obtenerResultados()">Cargar Resultados</button>
+        <hr>
+        <h3>Contenido de resultado.txt:</h3>
+        <pre id="display-resultados">Esperando conexión...</pre>
+    </div>
+
+    <script>
+        function obtenerResultados() {
+            const ip = document.getElementById('ip-ec2').value;
+            if(!ip) return alert("Por favor ingresa la IP de tu EC2");
+            
+            const url = http:// + ip + :8080/resultado.txt;
+            document.getElementById('display-resultados').innerText = "Cargando desde EC2...";
+
+            fetch(url)
+                .then(response => {
+                    if(!response.ok) throw new Error("Error en la respuesta de EC2");
+                    return response.text();
+                })
+                .then(data => { document.getElementById('display-resultados').innerText = data; })
+                .catch(error => { document.getElementById('display-resultados').innerText = "Error: No se pudo conectar al EC2. Revisa que el puerto 8080 esté abierto."; });
+        }
+    </script>
+</body>
+</html>
