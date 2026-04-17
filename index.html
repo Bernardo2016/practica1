@@ -27,7 +27,7 @@
             const ip = document.getElementById('ip-ec2').value;
             if(!ip) return alert("Por favor ingresa la IP de tu EC2");
             
-            const url = http:// + ip + :8080/resultado.txt;
+            const url = "http://" + ip + ":8080/resultado.txt";
             document.getElementById('display-resultados').innerText = "Cargando desde EC2...";
 
             fetch(url)
