@@ -5,9 +5,12 @@ phases:
     runtime-versions:
       python: 3.x
     commands:
-      - echo "Instalando dependencias..."
       - pip install boto3
   build:
     commands:
-      - echo "Iniciando validación de registros desde DynamoDB..."
+      # Dar permisos de ejecución al script bash
+      - chmod +x crear_registros.sh
+      # Ejecutar el script bash
+      - ./crear_registros.sh
+      # (Opcional) Luego puedes ejecutar tu script de validación
       - python validar_registros.py
