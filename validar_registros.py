@@ -1,22 +1,28 @@
 import boto3
+import csv
 
-def validar():
-    dynamodb = boto3.resource('dynamodb', region_name='us-east-1') # Cambia tu región si es necesario
+def insertar_datos():
+    s3 = boto3.client('s3')
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-1') # Ajusta tu región
     tabla = dynamodb.Table('TablaEstados')
     
-    print("--- INICIANDO LECTURA DE DYNAMODB ---")
-    respuesta = tabla.scan()
-    items = respuesta.get('Items', [])
+    # Leer archivo desde S3
+    respuesta = s3.get_object(Bucket='act.20.04', Key='Estados.txt')
+    lineas = respuesta['Body'].read().decode('utf-8').splitlines()
+    lector_csv = csv.DictReader(lineas)
     
-    for item in items:
-        estado = item.get('Estado')
-        # Ejemplo de validación: Verificar que el costo de alojamiento sea mayor a 0
-        costo_alojamiento = int(item.get('Costo_Alojamiento', 0))
-        
-        if costo_alojamiento > 0:
-            print(f"[SUCCESS] El estado {estado} tiene un costo de alojamiento válido: ${costo_alojamiento}")
-        else:
-            print(f"[ERROR] El estado {estado} tiene un costo de alojamiento inválido.")
+    # Insertar en DynamoDB
+    for fila in lector_csv:
+        tabla.put_item(Item={
+            'Estado': fila['Estado'],
+            'Temperatura': int(fila['Temperatura']),
+            'Humedad': int(fila['Humedad']),
+            'Costo_Alojamiento': int(fila['Costo_Alojamiento']),
+            'Costo_Transporte': int(fila['Costo_Transporte']),
+            'Dias_Promedio': int(fila['Dias_Promedio']),
+            'Tiempo_Traslado': int(fila['Tiempo_Traslado'])
+        })
+        print(f"Registro creado exitosamente: {fila['Estado']}")
 
 if __name__ == "__main__":
-    validar()
+    insertar_datos()
