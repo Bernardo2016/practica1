@@ -1,9 +1,13 @@
-﻿version: 0.2
+version: 0.2
+
 phases:
+  install:
+    runtime-versions:
+      python: 3.x
+    commands:
+      - echo "Instalando dependencias..."
+      - pip install boto3
   build:
     commands:
-      - echo "Validando el script en CodeBuild..."
-      - python procesar.py
-artifacts:
-  files:
-    - '**/*'
+      - echo "Iniciando validación de registros desde DynamoDB..."
+      - python validar_registros.py
