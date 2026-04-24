@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de Estados - DynamoDB</title>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1350.0.min.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; padding: 40px; color: #333; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #232f3e; text-align: center; margin-bottom: 30px; }
+        .controls { display: flex; gap: 15px; justify-content: center; margin-bottom: 30px; }
+        button { padding: 12px 24px; background-color: #ff9900; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+        button:hover { background-color: #e68a00; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border-bottom: 1px solid #eee; padding: 15px; text-align: left; }
+        th { background-color: #f8f9fa; color: #555; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+        tr:hover { background-color: #fcfcfc; }
+        .status { text-align: center; color: #666; font-size: 0.9em; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Visualizador de Datos: TablaEstados</h1>
+        
+        <div class="controls">
+            <button onclick="obtenerTodo()">Ver Todos los Registros</button>
+            <button onclick="obtenerTop()">Top 5 Temperaturas</button>
+        </div>
+
+        <table id="tabla-datos">
+            <thead>
+                <tr>
+                    <th>Estado</th>
+                    <th>Temperatura (°C)</th>
+                    <th>Humedad (%)</th>
+                    <th>Costo Alojamiento</th>
+                    <th>Costo Transporte</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpo-tabla">
+                </tbody>
+        </table>
+        <div id="mensaje" class="status">Pulsa un botón para cargar los datos desde DynamoDB</div>
+    </div>
+
+    <script>
+        // Configuración de acceso (Recuerda que estas llaves deben tener permisos de DynamoDB)
+        AWS.config.update({
+            region: 'us-east-1', 
+            accessKeyId: 'TU_ACCESS_KEY', 
+            secretAccessKey: 'TU_SECRET_KEY'
+        });
+
+        const dynamodb = new AWS.DynamoDB.DocumentClient();
+        const tabla = "TablaEstados";
+
+        function renderizar(items) {
+            const tbody = document.getElementById('cuerpo-tabla');
+            const mensaje = document.getElementById('mensaje');
+            tbody.innerHTML = "";
+            
+            if (items.length === 0) {
+                mensaje.innerText = "No se encontraron registros.";
+                return;
+            }
+
+            items.forEach(item => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${item.Estado}</strong></td>
+                        <td>${item.Temperatura}</td>
+                        <td>${item.Humedad}</td>
+                        <td>$${item.Costo_Alojamiento}</td>
+                        <td>$${item.Costo_Transporte}</td>
+                    </tr>`;
+            });
+            mensaje.innerText = "Datos cargados correctamente.";
+        }
+
+        function obtenerTodo() {
+            document.getElementById('mensaje').innerText = "Consultando...";
+            dynamodb.scan({ TableName: tabla }, (err, data) => {
+                if (err) {
+                    console.error(err);
+                    alert("Error al consultar DynamoDB. Revisa las credenciales y el CORS.");
+                } else {
+                    renderizar(data.Items);
+                }
+            });
+        }
+
+        function obtenerTop() {
+            document.getElementById('mensaje').innerText = "Filtrando por temperatura...";
+            dynamodb.scan({ TableName: tabla }, (err, data) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    // Ordenamos de mayor a menor temperatura y tomamos los primeros 5
+                    const items = data.Items.sort((a, b) => b.Temperatura - a.Temperatura).slice(0, 5);
+                    renderizar(items);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
