@@ -8,9 +8,12 @@ phases:
       - pip install boto3
   build:
     commands:
-      # Dar permisos de ejecución al script bash
       - chmod +x crear_registros.sh
-      # Ejecutar el script bash
       - ./crear_registros.sh
-      # (Opcional) Luego puedes ejecutar tu script de validación
       - python validar_registros.py
+  post_build:
+    commands:
+      - echo "Desplegando página web a S3..."
+      # Reemplaza 'nombre-de-tu-bucket-web' por el bucket donde quieres ver la página
+      - aws s3 cp index.html s3://act.20.04/index.html
+      - echo "Despliegue finalizado exitosamente."
