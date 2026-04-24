@@ -13,5 +13,5 @@ phases:
       - python validar_registros.py
   post_build:
     commands:
-      - echo "Desplegando página web a S3..."
-      - aws s3 cp index.html s3://mi-pagina2/index.html
+      - echo "Desplegando nueva página web a S3..."
+      - aws s3 cp consulta.html s3://mi-pagina2/consulta.html
