@@ -1,8 +1,8 @@
 #!/bin/bash
-
-# Variables
-BUCKET_LOGS="s3://act.20.04"
+# Cambia el nombre del bucket aquí
+BUCKET_LOGS="s3://mi-pagina2"
 LOG_FILE="/tmp/insercion_dynamo.log"
+# ... resto del código igual ...
 
 # Registrar la fecha y hora de inicio
 echo "=====================================" > $LOG_FILE
