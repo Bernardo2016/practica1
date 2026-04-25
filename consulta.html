@@ -47,8 +47,8 @@
         // Configuración de acceso (Recuerda que estas llaves deben tener permisos de DynamoDB)
         AWS.config.update({
             region: 'us-east-1', 
-            accessKeyId: 'TU_ACCESS_KEY', 
-            secretAccessKey: 'TU_SECRET_KEY'
+            accessKeyId: 'LabRole', 
+            secretAccessKey: 'LabRole'
         });
 
         const dynamodb = new AWS.DynamoDB.DocumentClient();
