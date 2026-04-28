@@ -1,5 +1,4 @@
 version: 0.2
-
 phases:
   install:
     runtime-versions:
@@ -8,10 +7,8 @@ phases:
       - pip install boto3
   build:
     commands:
-      - chmod +x crear_registros.sh
-      - ./crear_registros.sh
-      - python validar_registros.py
+      - echo "Iniciando procesamiento de base de datos..."
+      - python admin_finanzas.py
   post_build:
     commands:
-      - echo "Desplegando nueva página web a S3..."
-      - aws s3 cp consulta.html s3://mi-pagina2/consulta.html
+      - echo "Despliegue finalizado. Archivo de Finanzas actualizado en S3."
