@@ -6,5 +6,5 @@ phases:
       python: 3.x
   build:
     commands:
-      - echo Ejecutando análisis
+      - echo "Build docker"
       - python procesar.py
