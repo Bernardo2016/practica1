@@ -1,14 +1,10 @@
 version: 0.2
+
 phases:
   install:
     runtime-versions:
       python: 3.x
-    commands:
-      - pip install boto3
   build:
     commands:
-      - echo "Iniciando procesamiento de base de datos..."
-      - python admin_finanzas.py
-  post_build:
-    commands:
-      - echo "Despliegue finalizado. Archivo de Finanzas actualizado en S3."
+      - echo Ejecutando análisis
+      - python procesar.py
